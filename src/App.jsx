@@ -35,12 +35,14 @@ export default function App() {
     "Johannesburg",
     "Auckland",
   ];
-  useEffect(() => {
+   useEffect(() => {
     navigator.geolocation.getCurrentPosition((postion)=> setLocation({lat: postion.coords.latitude,lon:postion.coords.longitude}))
+  }, []);
+  useEffect(() => {
     axios.post('https://weather-api-fpk7.onrender.com/weather',location)
       .then(res => setWeatherData(res.data))
       .catch(err=> console.error(err))
-  }, []);
+  }, [location]);
   
   function getCity(city){
     fetch(`https://weather-api-fpk7.onrender.com/weather/${city}`, {
