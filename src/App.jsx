@@ -35,12 +35,30 @@ export default function App() {
     "Johannesburg",
     "Auckland",
   ];
+  useEffect(()=>{
+      const getLocation = () => { 
+        navigator.geolocation.getCurrentPosition((postion)=>{
+          const currentLocation = {
+            lat: postion.coords.latitude
+            ,lon:postion.coords.longitude
+          }
+          setLocation(currentLocation)
+        })
+      };
+      getLocation()
+      console.log(location);
+  },[])
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition((postion)=> setLocation({lat: postion.coords.latitude,lon:postion.coords.longitude}))
-    axios.post('https://weather-api-fpk7.onrender.com/weather',location)
-      .then(res => setWeatherData(res.data))
+    if(location.lat !== 0){
+      axios.post('https://weather-api-fpk7.onrender.com/weather',location)
+      .then(res => {
+        setWeatherData(res.data)
+        console.log(location);
+        console.log(res.data);
+      })
       .catch(err=> console.error(err))
-  }, []);
+    }
+  }, [location]);
   
   function getCity(city){
     fetch(`https://weather-api-fpk7.onrender.com/weather/${city}`, {
@@ -77,7 +95,9 @@ export default function App() {
   </div>
 
 ) : (
-  <p className='load'>Loading weather data...</p>
+  <div className="loading-spinner">
+    <div className="spinner"></div>
+  </div>
 )}
   </div>
   </>
