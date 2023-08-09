@@ -96,8 +96,8 @@ export default function App() {
 
 ) : (
   <div className="loading-spinner">
-    <div className="spinner"></div>
-  </div>
+          <div className="spinner"></div>
+        </div>
 )}
   </div>
   </>
