@@ -3,7 +3,23 @@ import axios from 'axios'
 
 export default function App() {
   const [weatherData, setWeatherData] = useState(null);
-  const [location , setLocation] = useState({lat:0 , lon:0})
+  const [location, setLocation] = useState(() => {
+    const initialLocation = {
+      lat: 0, 
+      lon: 0  
+    };
+  
+    navigator.geolocation.getCurrentPosition((position) => {
+      const currentLocation = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude
+      };
+      setLocation(currentLocation);
+    });
+    
+    return initialLocation;
+  });
+  console.log(location);
   const citys = [
     "New York City",
     "Paris",
@@ -35,26 +51,23 @@ export default function App() {
     "Johannesburg",
     "Auckland",
   ];
-  useEffect(()=>{
-      const getLocation = () => { 
-        navigator.geolocation.getCurrentPosition((postion)=>{
-          const currentLocation = {
-            lat: postion.coords.latitude
-            ,lon:postion.coords.longitude
-          }
-          setLocation(currentLocation)
-        })
-      };
-      getLocation()
-      console.log(location);
-  },[])
-  useEffect(() => {
-    if(location.lat !== 0){
+  // useEffect(()=>{
+  //     const getLocation = () => { 
+  //       navigator.geolocation.getCurrentPosition((postion)=>{
+  //         const currentLocation = {
+  //           lat: postion.coords.latitude
+  //           ,lon:postion.coords.longitude
+  //         }
+  //         setLocation(currentLocation)
+  //       })
+  //     };
+  //     getLocation()
+  //   },[])
+    useEffect(() => {
+    if(location.lat){
       axios.post('https://weather-api-fpk7.onrender.com/weather',location)
       .then(res => {
         setWeatherData(res.data)
-        console.log(location);
-        console.log(res.data);
       })
       .catch(err=> console.error(err))
     }
@@ -93,7 +106,6 @@ export default function App() {
       ))}
     </div>
   </div>
-
 ) : (
   <div className="loading-spinner">
           <div className="spinner"></div>
